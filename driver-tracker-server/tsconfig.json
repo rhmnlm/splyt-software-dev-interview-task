@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["node"],
+    "target": "ES2022",
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*"]
+}
