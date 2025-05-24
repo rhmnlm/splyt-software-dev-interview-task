@@ -1,0 +1,6 @@
+**/node_modules/
+
+# data-feeder
+data-feeder/dist
+data-feeder/src/processed
+data-feeder/src/input
