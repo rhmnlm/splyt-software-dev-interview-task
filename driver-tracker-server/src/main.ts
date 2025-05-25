@@ -2,6 +2,7 @@ import express from 'express';
 import { connectToDatabase } from './utilities/db-connection'
 import dotenv from 'dotenv';
 import driverRouter from './routes/driver-location.routes';
+import { initBatching } from './services/batcher.services';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use('/drivers', driverRouter);
 connectToDatabase().then(() => {
   app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
+    initBatching();
   });
 }).catch(err => {
   console.error('❌ Failed to connect to database:', err);
