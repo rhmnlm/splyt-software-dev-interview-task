@@ -85,3 +85,30 @@ export async function batchUpdateDriverLocation(driverBatchUpdates: DriverLocati
 export async function getDriverLocation(driverId: string){
   return DriverCurrentLocation.findOne({ driverId });
 }
+
+export async function getDriverLocationLedger(driverId: string, pageNum: number){
+  //hardcoded page limit here
+  const limit = 50;
+  const skip = (pageNum - 1) * limit;
+
+  try{
+    const results = await DriverLocationLedger.find({ driverId: driverId })
+    .sort({ timestamp: -1 })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+  
+    const totalCount = await DriverLocationLedger.countDocuments({ driverId: driverId });
+
+    return {
+      page: pageNum,
+      totalPages: Math.ceil(totalCount / limit),
+      totalCount,
+      results
+    }
+
+  }catch(error){
+    console.error(`error querying ${driverId} ledger`, error.message);
+    throw error;
+  }
+}
