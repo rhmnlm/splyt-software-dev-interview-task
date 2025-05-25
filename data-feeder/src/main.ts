@@ -29,8 +29,8 @@ function scheduleUpdates(updates: DriverLocation[]) {
         axios.post(`${process.env.API_SERVER_URI}/drivers/location`, payload)
         .then(()=>{
             const elapsedMs = Date.now() - requestStart;
-            console.log(`[${elapsedMs}ms] sent update for ${payload.driver_id}`)}
-        ).catch((err)=>{
+            console.log(`[${elapsedMs}ms] sent update for ${payload.driver_id} offset:${update.time_offset_sec}`);
+        }).catch((err)=>{
             const elapsedMs = Date.now() - requestStart;
             console.log(`[${elapsedMs}ms] error sending update for ${payload.driver_id}`, err.message)
         })
@@ -57,25 +57,27 @@ function start_data_feed(){
         const jsonFiles = files.filter(file => file.endsWith('.json'));
 
         if (jsonFiles.length === 0) {
-            console.log('No file to be process.');
+            // console.log('No file to be process.');
             return;
         }
 
         jsonFiles.forEach(file => {
             const filePath = path.join(TARGET_FOLDER, file);
 
-            fs.readFile(filePath, 'utf-8', async (err, content) => {
+            fs.readFile(filePath, 'utf-8', (err, content) => {
             if (err) {
                 console.error(`Failed to read file ${file}: ${err.message}`);
                 return;
             }
 
             try {
-                const parseStart = Date.now()
-                const updates: DriverLocation[] = await JSON.parse(content);
-                const parseElapsed = Date.now() - parseStart;
 
-                console.log(`file finished parsed in ${parseElapsed}ms`)
+                //parsing updates
+                const parseStart = Date.now()
+                const updates: DriverLocation[] = JSON.parse(content);
+                const parseElapsed = Date.now() - parseStart;
+                console.log(`file finished parsed in ${parseElapsed}ms`);
+
                 scheduleUpdates(updates);
 
                 // Move file to processed
