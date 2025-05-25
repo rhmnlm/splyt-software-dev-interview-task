@@ -26,7 +26,7 @@ function scheduleUpdates(updates: DriverLocation[]) {
             latitude: update.latitude,
             longitude: update.longitude
         }
-        axios.post(`${process.env.API_SERVER_URI}/drivers/location`, payload)
+        axios.post(`${process.env.API_SERVER_URI}/drivers/location`,  payload, {headers:{Authorization: process.env.API_SERVER_TOKEN}})
         .then(()=>{
             const elapsedMs = Date.now() - requestStart;
             console.log(`[${elapsedMs}ms] sent update for ${payload.driver_id} offset:${update.time_offset_sec}`);

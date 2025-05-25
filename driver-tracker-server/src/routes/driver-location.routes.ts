@@ -1,13 +1,11 @@
 import { Router } from 'express';
 import * as driverController from '../controllers/driver-location.controller';
-// import { authenticate } from '../middleware/auth.middleware';
+import { authToken } from '../middlewares/auth.middleware';
 
 const driverRouter = Router();
 
-// router.use(authenticate);
-
 // POST /drivers/location
-driverRouter.post('/location', driverController.upsertLocation);
+driverRouter.post('/location', authToken, driverController.upsertLocation);
 
 // GET /drivers/:driverId/location
 driverRouter.get('/:driverId/location', driverController.getDriverLocation);
