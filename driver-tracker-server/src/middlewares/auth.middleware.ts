@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as TokenService from "../services/api-token.services"
+import * as JwtService from "../utilities/jwt";
 
 //middleware to auth token from data-feeder
 export async function authToken(req: Request, res: Response, next: NextFunction) {
@@ -24,6 +25,25 @@ export async function authToken(req: Request, res: Response, next: NextFunction)
   next();
 }
 
+//middleware auth to guard token related services
 export async function requireAuth(req: Request, res: Response, next: NextFunction){
-  next();
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({ message: 'Authorization token missing or malformed' });
+    return;
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET is not set in environment');
+    }
+    JwtService.verifyJWT(token);
+    next(); 
+  } catch (err) {
+    console.error('JWT verification failed:', err);
+    res.status(401).json({ message: 'Invalid or expired token' });
+    return;
+  }
 }
