@@ -1,6 +1,9 @@
 import express from 'express';
-import { connectToDatabase } from './utilities/db-connection'
 import dotenv from 'dotenv';
+import swaggerUI from 'swagger-ui-express';
+import { swaggerSpec } from './swagger';
+
+import { connectToDatabase } from './utilities/db-connection'
 import driverRouter from './routes/driver-location.routes';
 import { initBatching } from './services/batcher.services';
 import { initDb } from './utilities/initDb';
@@ -12,6 +15,7 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 
 app.get('/health-check', (req, res) => {
